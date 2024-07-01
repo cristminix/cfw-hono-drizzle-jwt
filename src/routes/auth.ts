@@ -63,27 +63,27 @@ app.post(
 
 app.post("/login", zBodyValidator(loginValidationSchema), async (c) => {
   ///////
-  let keyHMAC
+  // let keyHMAC
   // Random data generator
-  let secureRandom = randomBytes(32).toString("hex")
+  // let secureRandom = randomBytes(32).toString("hex")
   let randomFgp = new Uint32Array(50)
   crypto.getRandomValues(randomFgp)
   let userFingerprint = Array.from(randomFgp)
     .map((byte) => byte.toString(16).padStart(2, "0"))
     .join("")
-  let fingerprintCookie =
-    "__Secure-Fgp=" + userFingerprint + "; SameSite=None; HttpOnly; Secure"
+  // let fingerprintCookie =
+    // "__Secure-Fgp=" + userFingerprint + "; SameSite=None; HttpOnly; Secure"
   let userFingerprintDigest = createHash("sha256")
     .update(userFingerprint, "utf-8")
     .digest()
 
   let userFingerprintHash = userFingerprintDigest.toString("hex")
-  console.log({
-    secureRandom,
-    userFingerprint,
-    fingerprintCookie,
-    userFingerprintHash,
-  })
+  // console.log({
+  //   secureRandom,
+  //   userFingerprint,
+  //   fingerprintCookie,
+  //   userFingerprintHash,
+  // })
 
   ///////
 
@@ -111,7 +111,7 @@ app.post("/login", zBodyValidator(loginValidationSchema), async (c) => {
   }
   const secret = c.env.SECRET
   const token = await sign(payload, secret)
-  setCookie(c, "Secure-Fgp", userFingerprint, {
+  setCookie(c, c.env.JWT_FINGERPRINT_COOKIE_NAME, userFingerprint, {
     // secure: true,
     httpOnly: true,
     sameSite: "Strict",

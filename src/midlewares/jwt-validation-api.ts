@@ -6,7 +6,7 @@ import { bearerAuth } from "hono/bearer-auth"
 export function applyJwtValidationApi(app) {
 	app.use("/api/*", async (c, next) => {
 		// Single valid privileged token
-		const userFingerprintCookie = getCookie(c, "Secure-Fgp");
+		const userFingerprintCookie = getCookie(c, c.env.JWT_FINGERPRINT_COOKIE_NAME);
 		if(!userFingerprintCookie)
 			return c.json(
 			{

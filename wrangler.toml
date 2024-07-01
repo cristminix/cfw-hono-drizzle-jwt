@@ -5,6 +5,7 @@ compatibility_flags = [ "nodejs_compat" ]
 
 [vars]
 MY_VAR = "my-variable"
+JWT_FINGERPRINT_COOKIE_NAME="Secure_Fgp"
 ALLOWED_ORIGINS = "http://localhost:5173,http://localhost,http://127.0.0.1"
 # [[kv_namespaces]]
 # binding = "MY_KV_NAMESPACE"

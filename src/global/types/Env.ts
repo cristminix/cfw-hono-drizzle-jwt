@@ -4,4 +4,5 @@ export type Env = {
   PRIVATE: string
   SECRET: string
   ALLOWED_ORIGINS: any
+  JWT_FINGERPRINT_COOKIE_NAME:string
 }
