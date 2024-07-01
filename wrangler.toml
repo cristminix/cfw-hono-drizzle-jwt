@@ -1,9 +1,11 @@
 name = "cfw-bun-hono-drizzle"
 compatibility_date = "2023-12-01"
+compatibility_flags = [ "nodejs_compat" ]
+
 
 [vars]
 MY_VAR = "my-variable"
-ALLOWED_ORIGINS = "localhost"
+ALLOWED_ORIGINS = "http://localhost:5173,http://localhost,http://127.0.0.1"
 # [[kv_namespaces]]
 # binding = "MY_KV_NAMESPACE"
 # id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
