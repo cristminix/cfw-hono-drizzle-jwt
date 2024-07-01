@@ -1,0 +1,21 @@
+name = "cfw-bun-hono-drizzle"
+compatibility_date = "2023-12-01"
+
+[vars]
+MY_VAR = "my-variable"
+ALLOWED_ORIGINS = "localhost"
+# [[kv_namespaces]]
+# binding = "MY_KV_NAMESPACE"
+# id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+# [[r2_buckets]]
+# binding = "MY_BUCKET"
+# bucket_name = "my-bucket"
+
+[[d1_databases]]
+binding = "DB"  
+database_name = "cfw-bun-hono-drizzle"
+database_id = "cd7fe58e-7903-456b-a31f-9ef9a78af821"
+
+# [ai]
+# binding = "AI"

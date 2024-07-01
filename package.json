@@ -1,0 +1,20 @@
+{
+  "name": "cfw-bun-hono-drizzle",
+  "scripts": {
+    "dev": "wrangler dev src/index.ts",
+    "deploy": "wrangler deploy --minify src/index.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:up": "drizzle-kit up"
+  },
+  "dependencies": {
+    "@hono-dev/zod-body-validator": "^0.1.1",
+    "@libsql/client": "^0.7.0",
+    "drizzle-orm": "^0.31.2",
+    "hono": "^4.4.9"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240529.0",
+    "drizzle-kit": "^0.22.7",
+    "wrangler": "^3.57.2"
+  }
+}

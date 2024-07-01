@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1719659646787,
+      "tag": "0000_deep_wild_pack",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1719724965526,
+      "tag": "0001_nappy_bug",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1719731645558,
+      "tag": "0002_closed_korath",
+      "breakpoints": true
+    }
+  ]
+}
