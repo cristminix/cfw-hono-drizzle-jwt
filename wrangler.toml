@@ -5,8 +5,16 @@ compatibility_flags = [ "nodejs_compat" ]
 
 [vars]
 MY_VAR = "my-variable"
-JWT_FINGERPRINT_COOKIE_NAME="Secure_Fgp"
-ALLOWED_ORIGINS = "http://localhost:5173,http://localhost,http://127.0.0.1"
+JWT_FINGERPRINT_COOKIE_NAME="__Secure-Fgp"
+JWT_FINGERPRINT_REFRESH_COOKIE_NAME="__Secure-Fgp-Refresh"
+
+ALLOWED_ORIGINS = "https://localhost:5173"
+
+# Token expiration in minutes
+REFRESH_TOKEN_EXPIRATION = 1440
+TOKEN_EXPIRATION = 5
+
+
 # [[kv_namespaces]]
 # binding = "MY_KV_NAMESPACE"
 # id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"

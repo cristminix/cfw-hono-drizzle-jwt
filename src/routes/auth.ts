@@ -8,8 +8,11 @@ import { z } from "zod"
 import { zBodyValidator } from "@hono-dev/zod-body-validator"
 import { createHonoWithBindings } from '../global/fn/createHonoWithBindings';
 import { encryptPassword } from '../global/fn/encryptPassword';
-import { randomBytes, createHash } from "node:crypto"
+import {generateAccessToken} from '../global/fn/generateAccessToken'
+import {generateRefreshToken} from '../global/fn/generateRefreshToken'
+// import { randomBytes, createHash } from "node:crypto"
 import { users } from '../db/schema';
+import {validateRefreshToken} from "../middlewares/jwt-refresh-token-validation"
 
 const registerValidationSchema = z.object({
   username: z.string(),
@@ -22,7 +25,26 @@ const loginValidationSchema = z.object({
   email: z.string().email(),
 })
 
+// const refreshTokenValidationSchema = z.object({
+//   refreshToken: z.string(),
+// })
+
 const app = createHonoWithBindings()
+  
+app.post("/refresh",async(c,next)=>await validateRefreshToken(c,next),async(c)=>{
+  // const result = await 
+  const {uid} = c.get('jwt')
+   const token = await generateAccessToken(c.env.SECRET,uid, c.env.TOKEN_EXPIRATION)
+  setCookie(c, c.env.JWT_FINGERPRINT_COOKIE_NAME, token.fingerprint, {
+    secure: true,
+    httpOnly: true,
+    sameSite: "Strict",
+  })
+  return c.json({
+    token: token.token
+  })
+})
+
 app.post(
   "/register",
   zBodyValidator(registerValidationSchema),
@@ -62,66 +84,44 @@ app.post(
 )
 
 app.post("/login", zBodyValidator(loginValidationSchema), async (c) => {
-  ///////
-  // let keyHMAC
-  // Random data generator
-  // let secureRandom = randomBytes(32).toString("hex")
-  let randomFgp = new Uint32Array(50)
-  crypto.getRandomValues(randomFgp)
-  let userFingerprint = Array.from(randomFgp)
-    .map((byte) => byte.toString(16).padStart(2, "0"))
-    .join("")
-  // let fingerprintCookie =
-    // "__Secure-Fgp=" + userFingerprint + "; SameSite=None; HttpOnly; Secure"
-  let userFingerprintDigest = createHash("sha256")
-    .update(userFingerprint, "utf-8")
-    .digest()
-
-  let userFingerprintHash = userFingerprintDigest.toString("hex")
-  // console.log({
-  //   secureRandom,
-  //   userFingerprint,
-  //   fingerprintCookie,
-  //   userFingerprintHash,
-  // })
-
-  ///////
 
   const user = c.req.valid("form")
 
   const { email, password } = user
   const db = drizzle(c.env.DB)
   let result = await db.select().from(users).where(eq(users.email, email))
-  let isUserExist = result[0]
+  let userRow = result[0]
 
-  if (!isUserExist) {
+  if (!userRow) {
     return c.json({ success: false, message: "User not found" }, 404)
   }
   const encryptedPassword = await encryptPassword(password, c.env.SECRET)
-  const isPasswordMatched = isUserExist?.password === encryptedPassword
+  const isPasswordMatched = userRow?.password === encryptedPassword
 
   if (!isPasswordMatched) {
     return c.json({ success: false, message: "Wrong password" }, 404)
   }
+  const token = await generateAccessToken(c.env.SECRET,userRow.id, c.env.TOKEN_EXPIRATION)
 
-  const payload = {
-    userFingerprint: userFingerprintHash,
-    email: isUserExist.email,
-    exp: Math.floor(Date.now() / 1000) + 60 * 30, // Token expires in 5 minutes
-  }
-  const secret = c.env.SECRET
-  const token = await sign(payload, secret)
-  setCookie(c, c.env.JWT_FINGERPRINT_COOKIE_NAME, userFingerprint, {
-    // secure: true,
+  const refreshToken = await generateRefreshToken(c.env.SECRET,userRow.id, c.env.REFRESH_TOKEN_EXPIRATION)  
+  
+  setCookie(c, c.env.JWT_FINGERPRINT_COOKIE_NAME, token.fingerprint, {
+    secure: true,
     httpOnly: true,
     sameSite: "Strict",
   })
-  // setCookie(c, "delicious_cookie", "macha")
+  setCookie(c, c.env.JWT_FINGERPRINT_REFRESH_COOKIE_NAME, refreshToken.fingerprint, {
+    secure: true,
+    httpOnly: true,
+    sameSite: "Strict",
+  })
+
 
   return c.json({
     success: true,
     message: "login success",
-    token: token,
+    token: token.token,
+    refreshToken: refreshToken.token,
   })
 })
 

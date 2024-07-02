@@ -26,6 +26,7 @@ export function applyJwtValidationApi(app) {
 				let verified = false;
 				verified = await verify(token, c.env.SECRET);
 				const { userFingerprint } = verified;
+				console.log({userFingerprint})
 				if (!userFingerprint) {
 					message = "Empty fingerprint token";
 					return false;

@@ -1,7 +1,7 @@
 {
   "name": "cfw-bun-hono-drizzle",
   "scripts": {
-    "dev": "wrangler dev src/index.ts",
+    "dev": "wrangler dev src/index.ts --local-protocol https --https-key-path .cert/key.pem --https-cert-path .cert/cert.pem",
     "deploy": "wrangler deploy --minify src/index.ts",
     "db:generate": "drizzle-kit generate",
     "db:up": "drizzle-kit up"
