@@ -11,8 +11,10 @@ import { encryptPassword } from '../global/fn/encryptPassword';
 import {generateAccessToken} from '../global/fn/generateAccessToken'
 import {generateRefreshToken} from '../global/fn/generateRefreshToken'
 // import { randomBytes, createHash } from "node:crypto"
-import { users } from '../db/schema';
+import { users,sessions } from '../db/schema';
 import {validateRefreshToken} from "../middlewares/jwt-refresh-token-validation"
+import MUser from "../global/models/MUser"
+import MSession from "../global/models/MSession"
 
 const registerValidationSchema = z.object({
   username: z.string(),
@@ -21,6 +23,8 @@ const registerValidationSchema = z.object({
 })
 
 const loginValidationSchema = z.object({
+  devId: z.string(),
+  ipaddr: z.string(),
   password: z.string(),
   email: z.string().email(),
 })
@@ -87,14 +91,25 @@ app.post("/login", zBodyValidator(loginValidationSchema), async (c) => {
 
   const user = c.req.valid("form")
 
-  const { email, password } = user
-  const db = drizzle(c.env.DB)
-  let result = await db.select().from(users).where(eq(users.email, email))
-  let userRow = result[0]
+  const { email, password ,ipaddr,devId} = user
+  const mUser = new MUser(c)
+  const mSession = new MSession(c)
+  // const db = drizzle(c.env.DB)
+  let userRow = await mUser.getRow({email})
 
   if (!userRow) {
     return c.json({ success: false, message: "User not found" }, 404)
   }
+
+  // check if user already have session
+  // const session = await mSession.getRow({uid:userRow.id})
+
+  // if(session){
+  //   return c.json({
+  //     message:'already login'
+  //   })
+  // }
+
   const encryptedPassword = await encryptPassword(password, c.env.SECRET)
   const isPasswordMatched = userRow?.password === encryptedPassword
 
@@ -104,7 +119,13 @@ app.post("/login", zBodyValidator(loginValidationSchema), async (c) => {
   const token = await generateAccessToken(c.env.SECRET,userRow.id, c.env.TOKEN_EXPIRATION)
 
   const refreshToken = await generateRefreshToken(c.env.SECRET,userRow.id, c.env.REFRESH_TOKEN_EXPIRATION)  
-  
+  await mSession.create({
+    uid:userRow.id,
+    refreshToken:refreshToken.token,
+    blacklist:0,
+    kind:devId,
+    ipaddr:ipaddr??'none'
+  })
   setCookie(c, c.env.JWT_FINGERPRINT_COOKIE_NAME, token.fingerprint, {
     secure: true,
     httpOnly: true,

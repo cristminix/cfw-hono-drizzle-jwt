@@ -7,6 +7,7 @@ export const sessions = sqliteTable("sessions", {
   ipaddr: text("ipaddr", { length: 256 }).notNull(),
   uid: integer("uid", { mode: "number" }).notNull(),
   refreshToken: text("refreshToken", { length: 256 }).notNull(),
+  blacklist: integer("blacklist", { length: 1}).notNull(),
   kind: text("kind", { length: 50 }).notNull(),
 
   // timestamp is set on insert

@@ -5,29 +5,8 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1719659646787,
-      "tag": "0000_deep_wild_pack",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1719724965526,
-      "tag": "0001_nappy_bug",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1719731645558,
-      "tag": "0002_closed_korath",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "6",
-      "when": 1719896957548,
-      "tag": "0003_dear_doctor_faustus",
+      "when": 1719908714614,
+      "tag": "0000_steep_captain_universe",
       "breakpoints": true
     }
   ]
