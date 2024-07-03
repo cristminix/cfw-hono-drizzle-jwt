@@ -7,9 +7,16 @@ import { calculateOffset } from '../fn/calculateOffset';
 class DrizzleModel extends DrizzleBaseModel {
 
 	
-	async update(pk, row) {
+	async update(pk, row_) {
+		const row = {...row_}
 		delete row[this.pk]
 		return await this.db.update(this.schema).set(row).where(eq(this.schema[this.pk], pk))
+	}
+	async updateByFieldFilter(field,value, row_) {
+		const row = {...row_}
+
+		delete row[this.pk]
+		return await this.db.update(this.schema).set(row).where(eq(this.schema[field], value))
 	}
 	async delete(pk, row) {
 		return await this.db.delete(this.schema).where(eq(this.schema[this.pk], pk))

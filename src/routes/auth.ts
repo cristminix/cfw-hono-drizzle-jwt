@@ -2,7 +2,9 @@ import { drizzle } from "drizzle-orm/d1"
 import { and, eq } from "drizzle-orm"
 import { sign } from "hono/jwt"
 import { 
-  setCookie 
+  setCookie,
+  getCookie, 
+  deleteCookie
 } from "hono/cookie"
 import { z } from "zod"
 import { zBodyValidator } from "@hono-dev/zod-body-validator"
@@ -13,6 +15,7 @@ import {generateRefreshToken} from '../global/fn/generateRefreshToken'
 // import { randomBytes, createHash } from "node:crypto"
 import { users,sessions } from '../db/schema';
 import {validateRefreshToken} from "../middlewares/jwt-refresh-token-validation"
+import {validateAccessToken} from "../middlewares/jwt-validation-api"
 import MUser from "../global/models/MUser"
 import MSession from "../global/models/MSession"
 
@@ -87,6 +90,22 @@ app.post(
   }
 )
 
+app.post("/logout",async(c,next)=>await validateRefreshToken(c,next),async(c)=>{
+  // const setCookie(c, c.env.JWT_FINGERPRINT_COOKIE_NAME
+  // const token = c.get('token')
+  // if(token){
+  //   const mSession = new MSession(c)
+  //   await mSession.updateByFieldFilter('refreshToken',token,{
+  //     blacklist:true
+  //   })
+  // }
+  deleteCookie(c,c.env.JWT_FINGERPRINT_COOKIE_NAME,{secure: true})
+  deleteCookie(c,c.env.JWT_FINGERPRINT_REFRESH_COOKIE_NAME,{secure: true})
+  return c.json({
+    success:true
+  })
+
+})
 app.post("/login", zBodyValidator(loginValidationSchema), async (c) => {
 
   const user = c.req.valid("form")
@@ -102,6 +121,12 @@ app.post("/login", zBodyValidator(loginValidationSchema), async (c) => {
   }
 
   // check if user already have session
+  const hasCookieRefreshFingerprint = getCookie(c,c.env.JWT_FINGERPRINT_REFRESH_COOKIE_NAME)
+  // if(hasCookieRefreshFingerprint)
+  //   return c.json({
+  //     success:false,
+  //     message:'already login'
+  //   })
   // const session = await mSession.getRow({uid:userRow.id})
 
   // if(session){
