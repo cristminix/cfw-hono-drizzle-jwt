@@ -4,17 +4,26 @@
     "dev": "wrangler dev src/index.ts --local-protocol https --https-key-path .cert/key.pem --https-cert-path .cert/cert.pem",
     "deploy": "wrangler deploy --minify src/index.ts",
     "db:generate": "drizzle-kit generate",
-    "db:up": "drizzle-kit up"
+    "db:up": "drizzle-kit up",
+    "test": "vitest"
   },
   "dependencies": {
+    "@cloudflare/vitest-pool-workers": "^0.4.9",
     "@hono-dev/zod-body-validator": "^0.1.1",
     "@libsql/client": "^0.7.0",
     "drizzle-orm": "^0.31.2",
-    "hono": "^4.4.9"
+    "hono": "^4.4.9",
+    "isomorphic-textencoder": "^1.0.1",
+    "json-bufferify": "^0.2.2",
+    "just-debounce-it": "^3.2.0",
+    "just-once": "^2.2.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240529.0",
+    "@vitest/ui": "1.5.0",
     "drizzle-kit": "^0.22.7",
+    "http-server": "^14.1.1",
+    "vitest": "1.5.0",
     "wrangler": "^3.57.2"
   }
 }

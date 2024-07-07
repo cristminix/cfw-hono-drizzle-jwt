@@ -4,6 +4,7 @@ compatibility_flags = [ "nodejs_compat" ]
 
 
 [vars]
+KV_STORE="IDB_KEYVAL"
 MY_VAR = "my-variable"
 JWT_FINGERPRINT_COOKIE_NAME="__Secure-Fgp"
 JWT_FINGERPRINT_REFRESH_COOKIE_NAME="__Secure-Fgp-Refresh"
@@ -15,9 +16,9 @@ REFRESH_TOKEN_EXPIRATION = 1440
 TOKEN_EXPIRATION = 5
 
 
-# [[kv_namespaces]]
-# binding = "MY_KV_NAMESPACE"
-# id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+[[kv_namespaces]]
+binding = "IDB_KEYVAL"
+id = "cf9d431401ca4c918c8629472f3af5d2"
 
 # [[r2_buckets]]
 # binding = "MY_BUCKET"
